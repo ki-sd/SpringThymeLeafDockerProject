@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<style>
+.row{
+	margin: 0px auto;
+	width: 800px
+}
+a{
+	text-decoration: none;
+	color: black
+}
+</style>
+	<div class="container">
+		<div class="row">
+			<table class="table">
+				<tr>
+					<td>
+						<table class="table" th:each="vo:${list}">
+							<tr>
+								<td width="30%" class="text-center" rowspan="2">
+									<img th:src="${vo.poster}" class="img-circle" style="width: 100px;height: 100px">
+								</td>
+								<td colspan="4" style="color:orange"><h3>[[${vo.chef}]]</h3></td>
+							</tr>
+							<tr>
+								<td class="text-center">
+									<img src="/icon/m1.png">[[${vo.mem_cont1}]]
+								</td>
+								<td class="text-center">
+									<img src="/icon/m2.png">[[${vo.mem_cont3}]]
+								</td>
+								<td class="text-center">
+									<img src="/icon/m3.png">[[${vo.mem_cont7}]]
+								</td>
+								<td class="text-center">
+									<img src="/icon/m4.png">[[${vo.mem_cont2}]]
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="row text-center" style="margin-top: 20px">
+			<ul class="pagination">
+				<li th:if="${startPage>1}"><a th:href="@{/recipe/chef_list(page=${startPage-1})}">&laquo;</a></li>
+				<li th:each="i:${#numbers.sequence(startPage,endPage)}" th:class="${curpage==i?'active':''}"><a th:href="@{/recipe/chef_list(page=${i})}">[[${i}]]</a></li>
+				<li th:if="${endPage<totalpage}"><a th:href="@{/recipe/chef_list(page=${endPage+1})}">&raquo;</a></li>
+			</ul>
+		</div>
+	</div>
+</html>

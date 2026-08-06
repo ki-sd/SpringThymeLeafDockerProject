@@ -9,7 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.sist.web.entity.Chef;
 import com.sist.web.entity.Recipe;
+import com.sist.web.repository.ChefRepository;
 import com.sist.web.repository.RecipeRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RecipeServiceImpl implements RecipeService {
 	private final RecipeRepository rRepo;
+	private final ChefRepository cRepo;
 	@Override
 	public List<Recipe> recipeList(int page) {
 		Pageable pg=PageRequest.of(page-1,12,Sort.by(Sort.Direction.ASC,"no"));
@@ -30,8 +33,8 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public int[] recipePageData(int page) {
-		int totalpage=(int)Math.ceil(rRepo.count()/12.0);
+	public int[] recipePageData(int page,int rowsize) {
+		int totalpage=(int)Math.ceil(rRepo.count()/(double)rowsize);
 		int startPage=((page-1)/10*10)+1;
 		int endPage=((page-1)/10*10)+10;
 		if(endPage>totalpage) endPage=totalpage;
@@ -47,6 +50,17 @@ public class RecipeServiceImpl implements RecipeService {
 	@Override
 	public List<Recipe> findByChefContains(String chef) {
 		return rRepo.findByChefContains(chef);
+	}
+
+	@Override
+	public List<Chef> chefList(int page) {
+		Pageable pg=PageRequest.of(page-1,20,Sort.by(Sort.Direction.ASC,"no"));
+		Page<Chef> p=cRepo.findAll(pg);
+		List<Chef> list=new ArrayList<Chef>();
+		if(p!=null && p.hasContent()) {
+			list=p.getContent();
+		}
+		return list;
 	}
 	
 }
