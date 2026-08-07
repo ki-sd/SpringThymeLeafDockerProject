@@ -23,22 +23,24 @@ public class RecipeServiceImpl implements RecipeService {
 	private final ChefRepository cRepo;
 	@Override
 	public List<Recipe> recipeList(int page) {
-		Pageable pg=PageRequest.of(page-1,12,Sort.by(Sort.Direction.ASC,"no"));
-		Page<Recipe> p=rRepo.findAll(pg);
-		List<Recipe> list=new ArrayList<Recipe>();
-		if(p!=null && p.hasContent()) {
-			list=p.getContent();
-		}
+//		Pageable pg=PageRequest.of(page-1,12,Sort.by(Sort.Direction.ASC,"no"));
+//		Page<Recipe> p=rRepo.findAll(pg);
+//		List<Recipe> list=new ArrayList<Recipe>();
+//		if(p!=null && p.hasContent()) {
+//			list=p.getContent();
+//		}
+		List<Recipe> list=rRepo.recipeListData((page*12)-12);
 		return list;
 	}
 
 	@Override
 	public int[] recipePageData(int page,int rowsize) {
-		int totalpage=(int)Math.ceil(rRepo.count()/(double)rowsize);
+		int count=rRepo.recipeListCount();
+		int totalpage=(int)Math.ceil(count/(double)rowsize);
 		int startPage=((page-1)/10*10)+1;
 		int endPage=((page-1)/10*10)+10;
 		if(endPage>totalpage) endPage=totalpage;
-		int[] pages= {page,totalpage,startPage,endPage};
+		int[] pages= {page,totalpage,startPage,endPage,count};
 		return pages;
 	}
 
