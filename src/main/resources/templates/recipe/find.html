@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<style>
+.row{
+	margin: 0px auto;
+	width: 960px
+}
+p{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+a{
+	text-decoration: none;
+	color: black
+}
+.a-link{
+	cursor: pointer;
+}
+</style>
+	<div class="container" id="findApp">
+		<div class="row" style="margin-top: 10px">
+			<select v-model="type" ref="typeRef" style="margin-right: 5px;">
+				<option value="1">이름
+				<option value="2">작성자
+			</select>
+			<input type="text" size="20" class="input-sm" v-model="fd" ref="fdRef" @keydown.enter="find()">
+			<button class="btn-sm btn-primary" @click="find()">검색</button>
+		</div>
+		<div class="row">
+			<div class="col-sm-3" v-for="(vo,index) in find_list" :key="index">
+				<a href="#">
+					<div class="thumbnail">
+						<img :src="vo.poster" :title="vo.title" style="width: 250px;height: 150px;">
+						<p>{{vo.chef}}</p>
+					</div>
+				</a>
+			</div>
+		</div>
+		<div class="row text-center" style="margin-top: 20px">
+			<ul class="pagination">
+				<li v-if="startPage>1"><a class="a-link" @click="move(startPage-1)">&laquo;</a></li>
+				<li v-for="i in range(startPage,endPage)" :class="curpage==i?'active':''"><a class="a-link" @click="move(i)">{{i}}</a></li>
+				<li v-if="endPage<totalpage"><a class="a-link" @click="move(endPage+1)">&raquo;</a></li>
+			</ul>
+		</div>
+	</div>
+<script>
+	const urlParams=new URLSearchParams(window.location.search)
+	const findApp=Vue.createApp({
+		data(){
+			return{
+				find_list:[],
+				curpage:1,
+				totalpage:0,
+				startPage:0,
+				endPage:0,
+				fd:urlParams.get('fd')||'고구마',
+				type:urlParams.get('type')||1
+			}
+		},
+		mounted(){
+			this.dataRecv()
+		},
+		methods:{
+			async dataRecv(){
+				await axios.get('http://localhost:8080/recipe/find_vue',{
+					params:{
+						page:this.curpage,
+						fd:this.fd,
+						type:this.type
+					}
+				}).then(response=>{
+					console.log(response.data)
+					this.find_list=response.data.find_list
+					this.curpage=response.data.curpage
+					this.totalpage=response.data.totalpage
+					this.startPage=response.data.startPage
+					this.endPage=response.data.endPage
+				})
+			},
+			move(page){
+				this.curpage=page
+				this.dataRecv()
+			},
+			range(start,end){
+				let arr=[]
+				let len=end-start
+				for(let i=0;i<=len;i++){
+					arr[i]=start
+					start++
+				}
+				return arr
+			},
+			find(){
+				if(!this.fd){
+					this.$refs.fdRef.focus()
+					return
+				}else{
+					this.curpage=1
+					this.dataRecv()
+				}
+			}
+		},
+		components:{
+			
+		},
+		computed:{
+			
+		},
+		watch:{
+			
+		}
+	}).mount('#findApp')
+</script>
+</html>

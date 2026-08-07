@@ -43,13 +43,15 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public List<Recipe> findByTitleContains(String title) {
-		return rRepo.findByTitleContains(title);
+	public Page<Recipe> findByTitleContains(String title,int page) {
+		Pageable pg=PageRequest.of(page-1,12,Sort.by(Sort.Direction.ASC,"no"));
+		return rRepo.findByTitleContains(title,pg);
 	}
 
 	@Override
-	public List<Recipe> findByChefContains(String chef) {
-		return rRepo.findByChefContains(chef);
+	public Page<Recipe> findByChefContains(String chef,int page) {
+		Pageable pg=PageRequest.of(page-1,12,Sort.by(Sort.Direction.ASC,"no"));
+		return rRepo.findByChefContains(chef,pg);
 	}
 
 	@Override
@@ -61,6 +63,21 @@ public class RecipeServiceImpl implements RecipeService {
 			list=p.getContent();
 		}
 		return list;
+	}
+
+	@Override
+	public int[] recipePageDataFind(int page,int rowsize,int type,String fd) {
+		int totalpage=0;
+		if(type==1) {
+			totalpage=(int)Math.ceil(rRepo.countByTitleContains(fd)/(double)rowsize);
+		}else {
+			totalpage=(int)Math.ceil(rRepo.countByChefContains(fd)/(double)rowsize);
+		}
+		int startPage=((page-1)/10*10)+1;
+		int endPage=((page-1)/10*10)+10;
+		if(endPage>totalpage) endPage=totalpage;
+		int[] pages= {page,totalpage,startPage,endPage};
+		return pages;
 	}
 	
 }
