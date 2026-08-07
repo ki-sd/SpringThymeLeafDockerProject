@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.sist.web.entity.Chef;
 import com.sist.web.entity.Recipe;
+import com.sist.web.entity.RecipeDetail;
 import com.sist.web.repository.ChefRepository;
+import com.sist.web.repository.DetailRepository;
 import com.sist.web.repository.RecipeRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class RecipeServiceImpl implements RecipeService {
 	private final RecipeRepository rRepo;
 	private final ChefRepository cRepo;
+	private final DetailRepository dRepo;
 	@Override
 	public List<Recipe> recipeList(int page) {
 //		Pageable pg=PageRequest.of(page-1,12,Sort.by(Sort.Direction.ASC,"no"));
@@ -80,6 +83,11 @@ public class RecipeServiceImpl implements RecipeService {
 		if(endPage>totalpage) endPage=totalpage;
 		int[] pages= {page,totalpage,startPage,endPage};
 		return pages;
+	}
+
+	@Override
+	public RecipeDetail recipeDetail(int no) {
+		return dRepo.findByNo(no);
 	}
 	
 }

@@ -9,6 +9,7 @@ import java.util.*;
 
 import com.sist.web.entity.Chef;
 import com.sist.web.entity.Recipe;
+import com.sist.web.entity.RecipeDetail;
 import com.sist.web.service.RecipeService;
 
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,14 @@ public class RecipeController {
 			model.addAttribute("fd",fd);
 		}
 		model.addAttribute("main_html", "recipe/find");
+		return "main/main";
+	}
+	
+	@GetMapping("/recipe/detail")
+	public String recipe_detail(@RequestParam(value="no")int no,Model model) {
+		RecipeDetail rd=rService.recipeDetail(no);
+		model.addAttribute("vo",rd);
+		model.addAttribute("main_html", "recipe/detail");
 		return "main/main";
 	}
 }
