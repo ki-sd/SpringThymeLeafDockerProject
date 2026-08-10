@@ -2,6 +2,7 @@ package com.sist.web.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 //NO           NOT NULL NUMBER         
 //POSTER       NOT NULL VARCHAR2(260)  
@@ -16,6 +17,7 @@ import lombok.Data;
 //FOODMAKE     NOT NULL CLOB 
 @Entity
 @Data
+@Table(name="RECIPEDETAIL")
 public class RecipeDetail {
 	@Id
 	private int no;

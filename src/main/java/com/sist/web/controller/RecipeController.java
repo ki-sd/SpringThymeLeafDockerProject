@@ -58,8 +58,19 @@ public class RecipeController {
 	
 	@GetMapping("/recipe/detail")
 	public String recipe_detail(@RequestParam(value="no")int no,Model model) {
-		RecipeDetail rd=rService.recipeDetail(no);
-		model.addAttribute("vo",rd);
+		RecipeDetail vo=rService.recipeDetail(no);
+		model.addAttribute("vo", vo);
+		List<String> mList=new ArrayList<String>();
+		List<String> iList=new ArrayList<String>();
+		String[] makes=vo.getFoodmake().split("\n");
+		for(String s:makes)
+		{
+			StringTokenizer st=new StringTokenizer(s,"^");
+			mList.add(st.nextToken());
+			iList.add(st.nextToken());
+		}
+		model.addAttribute("mList", mList);
+		model.addAttribute("iList", iList);
 		model.addAttribute("main_html", "recipe/detail");
 		return "main/main";
 	}
